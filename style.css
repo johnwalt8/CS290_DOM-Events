@@ -16,20 +16,34 @@ h3 {
     text-align: center;
 }
 
-table, th, td {
+table {
     text-align: center;
     border: 1px solid black;
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
+    border-spacing: 0px;
     padding: 14px 28px;
     margin: auto;
     margin-top: 7px;
     margin-bottom: 14px;
 }
 
+th, td {
+    text-align: center;
+    border: 1px solid black;
+    /* border-collapse: collapse; */
+    border-spacing: 0px;
+    padding: 14px 28px;
+    margin: auto;
+    margin-top: 7px;
+    margin-bottom: 14px;
+}
+
+
 .cell:focus {
     background-color: yellow;
-    border: 7px solid black;
+    border: 5px solid black;
     border-style: inset;
+    padding: 5px 19px;
 }
 
 div {
