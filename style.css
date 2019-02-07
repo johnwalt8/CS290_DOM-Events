@@ -17,11 +17,8 @@ h3 {
 }
 
 table {
-    text-align: center;
     border: 1px solid black;
-    /* border-collapse: collapse; */
     border-spacing: 0px;
-    padding: 14px 28px;
     margin: auto;
     margin-top: 7px;
     margin-bottom: 14px;
@@ -30,20 +27,15 @@ table {
 th, td {
     text-align: center;
     border: 1px solid black;
-    /* border-collapse: collapse; */
-    border-spacing: 0px;
     padding: 14px 28px;
     margin: auto;
-    margin-top: 7px;
-    margin-bottom: 14px;
 }
 
 
 .cell:focus {
-    background-color: yellow;
-    border: 5px solid black;
+    border: 4px solid blue;
     border-style: inset;
-    padding: 5px 19px;
+    padding: 10px 24px;
 }
 
 div {
