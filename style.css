@@ -44,6 +44,11 @@ div {
 
 button {
     width: 154px;
-    margin:7px auto;
+    height: 28px;
+    margin:4px auto;
     display: inline-block;
+}
+
+#mark {
+    margin-top: 14px;
 }
