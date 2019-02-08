@@ -4,10 +4,10 @@
 
 //one global variable to rule them all
 var DEG = {
+    increment: null,
     column: null,
-    index: "",
-    row: "",
-    col: "",
+    tabIndex: null,
+    rowCol: null,
     doc: {},
     body: {},
     page: {},
@@ -18,14 +18,22 @@ var DEG = {
 DEG.doc = document;
 DEG.body = document.body;
 
-DEG.column = (function () {
+DEG.increment = function() {
     var current, value = 0;
     return function () {
         current = value;
         value += 1;
         return current;
     };
-}());
+};
+
+DEG.column = (DEG.increment());
+
+DEG.tabIndex = (DEG.increment());
+
+DEG.rowCol = function() {
+    
+};
 
 DEG.page = {
     "h3": {
@@ -57,7 +65,7 @@ DEG.page = {
                     "tag": "td",
                     "attr": {
                         "class": "cell",
-                        "tabindex": `${DEG.index}`
+                        "tabindex": ""
                     },
                     "text": `cell ${DEG.row}, ${DEG.col}`,
                     "dups": 4
@@ -121,18 +129,25 @@ DEG.page = {
 };
 
 DEG.addTextAttr = function (prop, node) {
-    var text, textNode, attr;
+    var text, textNode, attr, index;
     if (prop.hasOwnProperty("text")) {
         text = prop["text"];
         if(prop["tag"] === "th") {
             text = text + DEG.column();
+        } else if (prop["tag"] === "td") {
+            text = text + DEG.rowCol();
         }
         textNode = document.createTextNode(text);
         node.appendChild(textNode);
     }
     if (prop.hasOwnProperty("attr")) {
         for (attr in prop["attr"]) {
-            node.setAttribute(attr, prop["attr"][attr]);
+            if (attr === "tabindex") {
+                index = DEG.tabIndex();
+                node.setAttribute(attr, index);
+            } else {
+                node.setAttribute(attr, prop["attr"][attr]);
+            }
         }
     }
 };
