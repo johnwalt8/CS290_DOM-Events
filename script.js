@@ -7,6 +7,7 @@ const DEG = {
     increment: null,
     column: null,
     tabIndex: null,
+    incrementRC: null,
     rowCol: null,
     doc: {},
     body: {},
@@ -31,9 +32,21 @@ DEG.column = (DEG.increment());
 
 DEG.tabIndex = (DEG.increment());
 
-DEG.rowCol = function () {
-
+DEG.incrementRC = function () {
+    var row = 1, col = 1, rowCol = "";
+    return function () {
+        rowCol = row + ", " + col;
+        if (col === 4) {
+            row += 1;
+            col = 1;
+        } else {
+            col += 1;
+        }
+        return rowCol;    
+    }
 };
+
+DEG.rowCol = (DEG.incrementRC());
 
 DEG.page = {
     "h3": {
