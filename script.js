@@ -3,7 +3,7 @@
 "use strict";
 
 //one global variable to rule them all
-var DEG = {
+const DEG = {
     increment: null,
     column: null,
     tabIndex: null,
@@ -18,7 +18,7 @@ var DEG = {
 DEG.doc = document;
 DEG.body = document.body;
 
-DEG.increment = function() {
+DEG.increment = function () {
     var current, value = 0;
     return function () {
         current = value;
@@ -31,8 +31,8 @@ DEG.column = (DEG.increment());
 
 DEG.tabIndex = (DEG.increment());
 
-DEG.rowCol = function() {
-    
+DEG.rowCol = function () {
+
 };
 
 DEG.page = {
@@ -67,7 +67,7 @@ DEG.page = {
                         "class": "cell",
                         "tabindex": ""
                     },
-                    "text": `cell ${DEG.row}, ${DEG.col}`,
+                    "text": "cell ",
                     "dups": 4
                 },
                 "dups": 3
@@ -131,22 +131,22 @@ DEG.page = {
 DEG.addTextAttr = function (prop, node) {
     var text, textNode, attr, index;
     if (prop.hasOwnProperty("text")) {
-        text = prop["text"];
-        if(prop["tag"] === "th") {
+        text = prop.text;
+        if (prop.tag === "th") {
             text = text + DEG.column();
-        } else if (prop["tag"] === "td") {
+        } else if (prop.tag === "td") {
             text = text + DEG.rowCol();
         }
-        textNode = document.createTextNode(text);
+        textNode = DEG.doc.createTextNode(text);
         node.appendChild(textNode);
     }
     if (prop.hasOwnProperty("attr")) {
-        for (attr in prop["attr"]) {
+        for (attr in prop.attr) {
             if (attr === "tabindex") {
                 index = DEG.tabIndex();
                 node.setAttribute(attr, index);
             } else {
-                node.setAttribute(attr, prop["attr"][attr]);
+                node.setAttribute(attr, prop.attr[attr]);
             }
         }
     }
@@ -156,10 +156,10 @@ DEG.makePage = function (parentNode, propName) {
     var prop, tag, node, i, dups;
     for (prop in propName) {
         if (propName.hasOwnProperty(prop) && propName[prop].hasOwnProperty("tag")) {
-            tag = propName[prop]["tag"];
-            dups = propName[prop]["dups"] || 1;
+            tag = propName[prop].tag;
+            dups = propName[prop].dups || 1;
             for (i = 0; i < dups; i += 1) {
-                node = document.createElement(tag);
+                node = DEG.doc.createElement(tag);
                 DEG.addTextAttr(propName[prop], node);
                 parentNode.appendChild(node);
                 DEG.makePage(node, propName[prop]);
