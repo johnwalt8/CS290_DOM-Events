@@ -8,16 +8,16 @@ const DEG = {
     doc: document,          // the document object
     body: document.body,    // the body object
     // create the page
-    increment: null,        // returns closure in increment value
+    increment: null,        // returns closure to increment value
     column: null,           // instance of "increment" for Header column value
     tabIndex: null,         // instance of "increment" for tabindex values
-    rowCol: null,           // closure for cell row and column values
+    rowCol: null,           // closure for cell row and cell column values
     page: {},               // page object contains page html as JSON
-    addTextAttr: null,      // function adds text and attributes to tags
+    addTextAttr: null,      // function adds text and attributes to elements
     tabindexToDoc: null,    // function adds tabindex property and value to <html> and <body>
     makePage: null,         // function makes page from page object
     // add the style
-    style: {},              // style object contains css selectors and ruls as JSON
+    style: {},              // style object contains css selectors and rules as JSON
     makeStyle: null,        // function makes style sheet from style object
     // add functionality
     cells: [],              // array of table <td> cells
@@ -241,9 +241,9 @@ DEG.style = {
     '#mark':{'margin-top': '14px'}
 };
 
-DEG.makeStyle = function (parent, styleObject) {
+DEG.makeStyle = function (styleObject) {
     var sheet, selector, prop, rule, index;
-    sheet = parent.head.appendChild(DEG.doc.createElement('style')).sheet;
+    sheet = DEG.doc.head.appendChild(DEG.doc.createElement('style')).sheet;
     for (selector in styleObject) {
         for (prop in styleObject[selector]) {
             rule = selector + " { " + prop + " : " + styleObject[selector][prop] + " }";
@@ -255,7 +255,7 @@ DEG.makeStyle = function (parent, styleObject) {
 
 DEG.makePage(DEG.body, DEG.page);
 DEG.tabindexToDoc();
-DEG.makeStyle(DEG.doc, DEG.style);
+DEG.makeStyle(DEG.style);
 
 // now that the page exists, we can get some elements
 DEG.cells = Array.from(DEG.doc.getElementsByClassName("cell"));
@@ -265,6 +265,10 @@ DEG.downButton = DEG.doc.getElementById("down");
 DEG.leftButton = DEG.doc.getElementById("left");
 DEG.rightButton = DEG.doc.getElementById("right");
 DEG.markButton = DEG.doc.getElementById("mark");
+
+DEG.focusCell = function (cellIndex) {
+    DEG.cells[cellIndex].focus();
+};
 
 // return focus to blueCell when page clicked
 DEG.html[0].addEventListener("focus", function() {
@@ -325,9 +329,5 @@ DEG.markButton.addEventListener("click", function () {
     DEG.cells[DEG.blueCell].style.backgroundColor = "yellow";
     DEG.focusCell(DEG.blueCell);
 });
-
-DEG.focusCell = function (cellIndex) {
-    DEG.cells[cellIndex].focus();
-};
 
 DEG.focusCell(0);
