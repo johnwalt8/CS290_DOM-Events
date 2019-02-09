@@ -1,42 +1,39 @@
-// test.js
+// script.js
 
 "use strict";
 
 //one global variable to rule them all
     //(and table of contents)
 const DEG = {
-    doc: {},                // the document object
-    body: {},               // the body object
+    doc: document,          // the document object
+    body: document.body,    // the body object
+    // create the page
     increment: null,        // returns closure in increment value
     column: null,           // instance of "increment" for Header column value
     tabIndex: null,         // instance of "increment" for tabindex values
     rowCol: null,           // closure for cell row and column values
     page: {},               // page object contains page html as JSON
     addTextAttr: null,      // function adds text and attributes to tags
-    tabindexToDoc: null,    // function adds tabindex property and value to tags
+    tabindexToDoc: null,    // function adds tabindex property and value to <html> and <body>
     makePage: null,         // function makes page from page object
+    // add the style
     style: {},              // style object contains css selectors and ruls as JSON
-    makeStyle: null,         // function makes style sheet from style object
-
-    cells: Array.from(document.getElementsByClassName("cell")),
-    // body: document.getElementsByTagName("body"),
-    tbody: document.getElementsByTagName("tbody"),
-    focusCell: null,
-    upButton: document.getElementById("up"),
-    downButton: document.getElementById("down"),
-    leftButton: document.getElementById("left"),
-    rightButton: document.getElementById("right"),
-    markButton: document.getElementById("mark"),
-    activeElm: 0,
-    focusedCell: 0,
+    makeStyle: null,        // function makes style sheet from style object
+    // add functionality
+    cells: [],              // array of table <td> cells
+    html: {},               // element objects
+    upButton: {},
+    downButton: {},
+    leftButton: {},
+    rightButton: {},
+    markButton: {},
+    focusCell: null,        // function to set focus on current table cell
+    blueCell: 0             // index of current table cell
 };
-
-DEG.doc = document;
-DEG.body = document.body;
 
 DEG.increment = function () {
     var current, value = 0;
-    return function () {
+    return function () { // returns current value and increments for next use
         current = value;
         value += 1;
         return current;
@@ -51,14 +48,14 @@ DEG.rowCol = (function () {
     var row = 1, col = 1, rowCol = "";
     return function () {
         rowCol = row + ", " + col;
-        if (col === 4) {
+        if (col === 4) { // increments row after 4th column
             row += 1;
             col = 1;
         } else {
             col += 1;
         }
         return rowCol;    
-    }
+    };
 }());
 
 DEG.page = {
@@ -246,7 +243,7 @@ DEG.style = {
 
 DEG.makeStyle = function (parent, styleObject) {
     var sheet, selector, prop, rule, index;
-    sheet = parent.head.appendChild(document.createElement('style')).sheet;
+    sheet = parent.head.appendChild(DEG.doc.createElement('style')).sheet;
     for (selector in styleObject) {
         for (prop in styleObject[selector]) {
             rule = selector + " { " + prop + " : " + styleObject[selector][prop] + " }";
@@ -260,11 +257,73 @@ DEG.makePage(DEG.body, DEG.page);
 DEG.tabindexToDoc();
 DEG.makeStyle(DEG.doc, DEG.style);
 
-DEG.body.addEventListener("focusin", function() {
-    var current = DEG.cells.indexOf(document.activeElement);
-    if (current > -1) {
-        DEG.focusedCell = current;
+// now that the page exists, we can get some elements
+DEG.cells = Array.from(DEG.doc.getElementsByClassName("cell"));
+DEG.html = DEG.doc.getElementsByTagName("html");
+DEG.upButton = DEG.doc.getElementById("up");
+DEG.downButton = DEG.doc.getElementById("down");
+DEG.leftButton = DEG.doc.getElementById("left");
+DEG.rightButton = DEG.doc.getElementById("right");
+DEG.markButton = DEG.doc.getElementById("mark");
+
+// return focus to blueCell when page clicked
+DEG.html[0].addEventListener("focus", function() {
+    if (DEG.doc.activeElement === DEG.html[0]) {
+        DEG.focusCell(DEG.blueCell);
     }
+});
+
+// return focus to blueCell when body clicked
+DEG.body.addEventListener("focus", function() {
+    if (DEG.doc.activeElement === DEG.body) {
+        DEG.focusCell(DEG.blueCell);
+    }
+});
+
+
+// focus change on any table <td> resets DEG.blueCell
+DEG.body.addEventListener("focusin", function() {
+    var current = DEG.cells.indexOf(DEG.doc.activeElement);
+    if (current > -1) {
+        DEG.blueCell = current;
+    }
+});
+
+DEG.upButton.addEventListener("click", function () {
+    if(DEG.blueCell > 3) {
+        DEG.focusCell(DEG.blueCell - 4);
+    } else {
+        DEG.focusCell(DEG.blueCell);
+    }
+});
+
+DEG.downButton.addEventListener("click", function() {
+    if(DEG.blueCell < 8) {
+        DEG.focusCell(DEG.blueCell + 4);
+    } else {
+        DEG.focusCell(DEG.blueCell);
+    }
+});
+
+DEG.rightButton.addEventListener("click", function () {
+    if(DEG.blueCell !== 3 && DEG.blueCell !== 7 && DEG.blueCell !== 11) {
+        DEG.focusCell(DEG.blueCell + 1);
+    } else {
+        DEG.focusCell(DEG.blueCell);
+    }
+});
+
+DEG.leftButton.addEventListener("click", function () {
+    if(DEG.blueCell !== 0 && DEG.blueCell !== 4 && DEG.blueCell !== 8) {
+        DEG.focusCell(DEG.blueCell - 1);
+    } else {
+        DEG.focusCell(DEG.blueCell);
+    }
+});
+
+DEG.markButton.addEventListener("click", function () {
+    DEG.cells[DEG.blueCell].style.backgroundColor = "yellow";
+    DEG.focusCell(DEG.blueCell);
 });
 
 DEG.focusCell = function (cellIndex) {
@@ -272,46 +331,3 @@ DEG.focusCell = function (cellIndex) {
 };
 
 DEG.focusCell(0);
-
-DEG.body[0].addEventListener("focus", function() {
-    if (document.activeElement === DEG.body) {
-        DEG.focusCell(DEG.focusedCell);
-    }
-});
-
-DEG.upButton.addEventListener("click", function () {
-    if(DEG.focusedCell > 4) {
-        DEG.focusCell(DEG.focusedCell - 4);
-    } else {
-        DEG.focusCell(DEG.focusedCell);
-    }
-});
-
-DEG.downButton.addEventListener("click", function() {
-    if(DEG.focusedCell < 8) {
-        DEG.focusCell(DEG.focusedCell + 4);
-    } else {
-        DEG.focusCell(DEG.focusedCell);
-    }
-});
-
-DEG.rightButton.addEventListener("click", function () {
-    if(DEG.focusedCell !== 3 && DEG.focusedCell !== 7 && DEG.focusedCell !== 11) {
-        DEG.focusCell(DEG.focusedCell + 1);
-    } else {
-        DEG.focusCell(DEG.focusedCell);
-    }
-});
-
-DEG.leftButton.addEventListener("click", function () {
-    if(DEG.focusedCell !== 0 && DEG.focusedCell !== 4 && DEG.focusedCell !== 8) {
-        DEG.focusCell(DEG.focusedCell - 1);
-    } else {
-        DEG.focusCell(DEG.focusedCell);
-    }
-});
-
-DEG.markButton.addEventListener("click", function () {
-    DEG.cells[DEG.focusedCell].style.backgroundColor = "yellow";
-    DEG.focusCell(DEG.focusedCell);
-});

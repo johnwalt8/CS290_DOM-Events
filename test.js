@@ -3,7 +3,8 @@
 "use strict";
 
 //one global variable to rule them all
-var DEG = {
+const DEG = {
+    doc: document,
     cells: Array.from(document.getElementsByClassName("cell")),
     body: document.getElementsByTagName("body"),
     tbody: document.getElementsByTagName("tbody"),
@@ -14,7 +15,7 @@ var DEG = {
     rightButton: document.getElementById("right"),
     markButton: document.getElementById("mark"),
     activeElm: 0,
-    focusedCell: 0,
+    focusedCell: 0
 };
 
 DEG.body[0].addEventListener("focusin", function() {
