@@ -12,8 +12,10 @@ const DEG = {
     doc: {},
     body: {},
     page: {},
+    style: {},
     addTextAttr: null,
-    makePage: null
+    makePage: null,
+    makeStyle: null
 };
 
 DEG.doc = document;
@@ -181,5 +183,53 @@ DEG.makePage = function (parentNode, propName) {
     }
 };
 
+DEG.style = {
+    'html': [{'background': '#404040'}],
+    'body': [
+        {'width': '95%'},
+        {'max-width': '700px'},
+        {'min-height': '700px'},
+        {'padding': '14px'},
+        {'background-color': 'rgb(242, 242, 242)'},
+        {'border': 'solid 3px'}
+    ],
+    'h3': [{'text-align': 'center'}],
+    'table': [
+        {'border': '1px solid black'},
+        {'border-spacing': '0px'},
+        {'margin': 'auto'},
+        {'margin-top': '7px'},
+        {'margin-bottom': '14px'},
+    ],
+    'th': [
+        {'text-align': 'center'},
+        {'border': '1px solid black'},
+        {'padding': '14px 28px'},
+        {'margin': 'auto'}
+    ],
+    'td': [
+        {'text-align': 'center'},
+        {'border': '1px solid black'},
+        {'padding': '14px 28px'},
+        {'margin': 'auto'}
+    ],
+    '.cell:focus': [
+        {'border': '4px solid blue'},
+        {'border-style': 'inset'},
+        {'padding': '10px 24px'}
+    ],
+    'div': [{'text-align': 'center'}],
+    'button': [
+        {'width': '154px'},
+        {'height': '28px'},
+        {'margin': '4px auto'},
+        {'display': 'inline-block'}
+    ],
+    '#mark': [{'margin-top': '14px'}]
+}
+
+DEG.makeStyle = function (parent, style) {
+    
+}
 
 DEG.makePage(DEG.body, DEG.page);
