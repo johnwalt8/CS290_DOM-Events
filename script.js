@@ -167,6 +167,16 @@ DEG.addTextAttr = function (prop, node) {
     }
 };
 
+DEG.tabindexToDoc = function () {
+    var html, body, index;
+    html = DEG.doc.getElementsByTagName("html")[0];
+    index = DEG.tabIndex();
+    html.setAttribute("tabindex", index)
+    body = DEG.doc.getElementsByTagName("body")[0];
+    index = DEG.tabIndex();
+    body.setAttribute("tabindex", index)
+};
+
 DEG.makePage = function (parentNode, propName) {
     var prop, tag, node, i, dups;
     for (prop in propName) {
@@ -181,6 +191,7 @@ DEG.makePage = function (parentNode, propName) {
             }
         }
     }
+    DEG.tabindexToDoc();
 };
 
 DEG.style = {
@@ -228,8 +239,22 @@ DEG.style = {
     '#mark': [{'margin-top': '14px'}]
 }
 
-DEG.makeStyle = function (parent, style) {
-    
+DEG.makeStyle = function (parent, styleObject) {
+    var sheet;
+    sheet = DEG.doc.head.appendChild(document.createElement('style')).sheet;
+
+
+    function css(selector, styleString) {
+        const rule = `${selector} { ${styleString} }`;
+        const index = sheet.cssRules.length;
+      
+        sheet.insertRule(rule, index);
+      }
+      
+      css(".zero", "color: blue;");
+
+    //style.type = 'text/css';
+    //return style;
 }
 
 DEG.makePage(DEG.body, DEG.page);
