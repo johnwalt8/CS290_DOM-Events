@@ -3,19 +3,32 @@
 "use strict";
 
 //one global variable to rule them all
+    //(and table of contents)
 const DEG = {
-    increment: null,
-    column: null,
-    tabIndex: null,
-    incrementRC: null,
-    rowCol: null,
-    doc: {},
-    body: {},
-    page: {},
-    style: {},
-    addTextAttr: null,
-    makePage: null,
-    makeStyle: null
+    doc: {},                // the document object
+    body: {},               // the body object
+    increment: null,        // returns closure in increment value
+    column: null,           // instance of "increment" for Header column value
+    tabIndex: null,         // instance of "increment" for tabindex values
+    rowCol: null,           // closure for cell row and column values
+    page: {},               // page object contains page html as JSON
+    addTextAttr: null,      // function adds text and attributes to tags
+    tabindexToDoc: null,    // function adds tabindex property and value to tags
+    makePage: null,         // function makes page from page object
+    style: {},              // style object contains css selectors and ruls as JSON
+    makeStyle: null,         // function makes style sheet from style object
+
+    cells: Array.from(document.getElementsByClassName("cell")),
+    // body: document.getElementsByTagName("body"),
+    tbody: document.getElementsByTagName("tbody"),
+    focusCell: null,
+    upButton: document.getElementById("up"),
+    downButton: document.getElementById("down"),
+    leftButton: document.getElementById("left"),
+    rightButton: document.getElementById("right"),
+    markButton: document.getElementById("mark"),
+    activeElm: 0,
+    focusedCell: 0,
 };
 
 DEG.doc = document;
@@ -34,7 +47,7 @@ DEG.column = (DEG.increment());
 
 DEG.tabIndex = (DEG.increment());
 
-DEG.incrementRC = function () {
+DEG.rowCol = (function () {
     var row = 1, col = 1, rowCol = "";
     return function () {
         rowCol = row + ", " + col;
@@ -46,9 +59,7 @@ DEG.incrementRC = function () {
         }
         return rowCol;    
     }
-};
-
-DEG.rowCol = (DEG.incrementRC());
+}());
 
 DEG.page = {
     "h3": {
@@ -231,7 +242,7 @@ DEG.style = {
         'display': 'inline-block'
     },
     '#mark':{'margin-top': '14px'}
-}
+};
 
 DEG.makeStyle = function (parent, styleObject) {
     var sheet, selector, prop, rule, index;
@@ -248,3 +259,59 @@ DEG.makeStyle = function (parent, styleObject) {
 DEG.makePage(DEG.body, DEG.page);
 DEG.tabindexToDoc();
 DEG.makeStyle(DEG.doc, DEG.style);
+
+DEG.body.addEventListener("focusin", function() {
+    var current = DEG.cells.indexOf(document.activeElement);
+    if (current > -1) {
+        DEG.focusedCell = current;
+    }
+});
+
+DEG.focusCell = function (cellIndex) {
+    DEG.cells[cellIndex].focus();
+};
+
+DEG.focusCell(0);
+
+DEG.body[0].addEventListener("focus", function() {
+    if (document.activeElement === DEG.body) {
+        DEG.focusCell(DEG.focusedCell);
+    }
+});
+
+DEG.upButton.addEventListener("click", function () {
+    if(DEG.focusedCell > 4) {
+        DEG.focusCell(DEG.focusedCell - 4);
+    } else {
+        DEG.focusCell(DEG.focusedCell);
+    }
+});
+
+DEG.downButton.addEventListener("click", function() {
+    if(DEG.focusedCell < 8) {
+        DEG.focusCell(DEG.focusedCell + 4);
+    } else {
+        DEG.focusCell(DEG.focusedCell);
+    }
+});
+
+DEG.rightButton.addEventListener("click", function () {
+    if(DEG.focusedCell !== 3 && DEG.focusedCell !== 7 && DEG.focusedCell !== 11) {
+        DEG.focusCell(DEG.focusedCell + 1);
+    } else {
+        DEG.focusCell(DEG.focusedCell);
+    }
+});
+
+DEG.leftButton.addEventListener("click", function () {
+    if(DEG.focusedCell !== 0 && DEG.focusedCell !== 4 && DEG.focusedCell !== 8) {
+        DEG.focusCell(DEG.focusedCell - 1);
+    } else {
+        DEG.focusCell(DEG.focusedCell);
+    }
+});
+
+DEG.markButton.addEventListener("click", function () {
+    DEG.cells[DEG.focusedCell].style.backgroundColor = "yellow";
+    DEG.focusCell(DEG.focusedCell);
+});
