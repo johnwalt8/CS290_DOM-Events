@@ -191,70 +191,60 @@ DEG.makePage = function (parentNode, propName) {
             }
         }
     }
-    DEG.tabindexToDoc();
 };
 
 DEG.style = {
-    'html': [{'background': '#404040'}],
-    'body': [
-        {'width': '95%'},
-        {'max-width': '700px'},
-        {'min-height': '700px'},
-        {'padding': '14px'},
-        {'background-color': 'rgb(242, 242, 242)'},
-        {'border': 'solid 3px'}
-    ],
-    'h3': [{'text-align': 'center'}],
-    'table': [
-        {'border': '1px solid black'},
-        {'border-spacing': '0px'},
-        {'margin': 'auto'},
-        {'margin-top': '7px'},
-        {'margin-bottom': '14px'},
-    ],
-    'th': [
-        {'text-align': 'center'},
-        {'border': '1px solid black'},
-        {'padding': '14px 28px'},
-        {'margin': 'auto'}
-    ],
-    'td': [
-        {'text-align': 'center'},
-        {'border': '1px solid black'},
-        {'padding': '14px 28px'},
-        {'margin': 'auto'}
-    ],
-    '.cell:focus': [
-        {'border': '4px solid blue'},
-        {'border-style': 'inset'},
-        {'padding': '10px 24px'}
-    ],
-    'div': [{'text-align': 'center'}],
-    'button': [
-        {'width': '154px'},
-        {'height': '28px'},
-        {'margin': '4px auto'},
-        {'display': 'inline-block'}
-    ],
-    '#mark': [{'margin-top': '14px'}]
+    'html': {'background': '#404040'},
+    'body': {
+        'width': '95%',
+        'max-width': '700px',
+        'min-height': '700px',
+        'padding': '14px',
+        'margin': '7px auto',
+        'background-color': 'rgb(242, 242, 242)',
+        'border': 'solid 3px'
+    },
+    'h3':{'text-align': 'center'},
+    'table':{
+        'border': '1px solid black',
+        'border-spacing': '0px',
+        'margin': 'auto',
+        'margin-top': '7px',
+        'margin-bottom': '14px',
+    },
+    'th, td':{
+        'text-align': 'center',
+        'border': '1px solid black',
+        'padding': '14px 28px',
+        'margin': 'auto'
+    },
+    '.cell:focus':{
+        'border': '4px solid blue',
+        'border-style': 'inset',
+        'padding': '10px 24px'
+    },
+    'div':{'text-align': 'center'},
+    'button':{
+        'width': '154px',
+        'height': '28px',
+        'margin': '4px auto',
+        'display': 'inline-block'
+    },
+    '#mark':{'margin-top': '14px'}
 }
 
 DEG.makeStyle = function (parent, styleObject) {
-    var sheet;
-    sheet = DEG.doc.head.appendChild(document.createElement('style')).sheet;
-
-
-    function css(selector, styleString) {
-        const rule = `${selector} { ${styleString} }`;
-        const index = sheet.cssRules.length;
-      
-        sheet.insertRule(rule, index);
-      }
-      
-      css(".zero", "color: blue;");
-
-    //style.type = 'text/css';
-    //return style;
-}
+    var sheet, selector, prop, rule, index;
+    sheet = parent.head.appendChild(document.createElement('style')).sheet;
+    for (selector in styleObject) {
+        for (prop in styleObject[selector]) {
+            rule = selector + " { " + prop + " : " + styleObject[selector][prop] + " }";
+            index = sheet.cssRules.length;
+            sheet.insertRule(rule, index);
+        }
+    }
+};
 
 DEG.makePage(DEG.body, DEG.page);
+DEG.tabindexToDoc();
+DEG.makeStyle(DEG.doc, DEG.style);
